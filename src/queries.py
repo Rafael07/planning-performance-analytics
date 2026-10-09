@@ -47,24 +47,25 @@ def get_executive_kpis(ano_mes: str, id_unidade: Optional[str] = None) -> Dict[s
     """Calcula os indicadores executivos consolidados para a competência selecionada."""
     con = get_connection(read_only=True)
     try:
-        unit_filter = "AND ctr.id_unidade = ?" if id_unidade and id_unidade != "TODAS" else ""
-        unit_filter_atd = "AND a.id_unidade = ?" if id_unidade and id_unidade != "TODAS" else ""
-        unit_filter_can = "AND c_cancel.id_unidade = ?" if id_unidade and id_unidade != "TODAS" else ""
-        
-        params: List[Any] = [ano_mes]
-        if id_unidade and id_unidade != "TODAS":
-            params.append(id_unidade)
+        is_filtered = bool(id_unidade and id_unidade != "TODAS")
+        unit_filter = "AND ctr.id_unidade = $unidade" if is_filtered else ""
+        unit_filter_atd = "AND a.id_unidade = $unidade" if is_filtered else ""
+        unit_filter_can = "AND c_cancel.id_unidade = $unidade" if is_filtered else ""
+
+        sql_params: Dict[str, Any] = {"ano_mes": ano_mes}
+        if is_filtered:
+            sql_params["unidade"] = id_unidade
 
         query = f"""
         WITH ultimo_dia AS (
             SELECT MAX(data) AS data_limite
             FROM dim_calendario
-            WHERE ano_mes = ?
+            WHERE ano_mes = $ano_mes
         ),
         primeiro_dia AS (
             SELECT MIN(data) AS data_inicio
             FROM dim_calendario
-            WHERE ano_mes = ?
+            WHERE ano_mes = $ano_mes
         ),
         ativos_inicio AS (
             SELECT COUNT(DISTINCT ctr.id_contrato) AS total_ativos_inicio
@@ -89,7 +90,7 @@ def get_executive_kpis(ano_mes: str, id_unidade: Optional[str] = None) -> Dict[s
             SELECT COUNT(DISTINCT c_cancel.id_contrato) AS cancelados_no_mes
             FROM fct_contratos c_cancel
             JOIN dim_calendario c ON c_cancel.data_cancelamento = c.data
-            WHERE c.ano_mes = ?
+            WHERE c.ano_mes = $ano_mes
               {unit_filter_can}
         ),
         atendimentos_mes AS (
@@ -98,7 +99,7 @@ def get_executive_kpis(ano_mes: str, id_unidade: Optional[str] = None) -> Dict[s
                 COALESCE(SUM(a.custo_direto_servico), 0) AS custo_total_sinistros
             FROM fct_atendimentos a
             JOIN dim_calendario c ON a.data_acionamento = c.data
-            WHERE c.ano_mes = ?
+            WHERE c.ano_mes = $ano_mes
               {unit_filter_atd}
         )
         SELECT 
@@ -114,17 +115,6 @@ def get_executive_kpis(ano_mes: str, id_unidade: Optional[str] = None) -> Dict[s
         CROSS JOIN cancelamentos_mes cm
         CROSS JOIN atendimentos_mes am
         """
-
-        # Prepara lista de parâmetros para a query
-        sql_params = [ano_mes, ano_mes]
-        if id_unidade and id_unidade != "TODAS":
-            sql_params.append(id_unidade)
-        sql_params.append(ano_mes)
-        if id_unidade and id_unidade != "TODAS":
-            sql_params.append(id_unidade)
-        sql_params.append(ano_mes)
-        if id_unidade and id_unidade != "TODAS":
-            sql_params.append(id_unidade)
 
         res = con.execute(query, sql_params).fetchone()
 
