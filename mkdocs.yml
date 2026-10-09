@@ -1,0 +1,63 @@
+site_name: Planning & Performance Analytics
+site_description: Plataforma Integrada de Inteligência Analítica, Simulação de Cenários e Controle Estatístico de Processos (Grupo Digna)
+site_author: Rafael Rodrigues
+
+theme:
+  name: material
+  language: pt-BR
+  palette:
+    - scheme: default
+      primary: indigo
+      accent: blue
+      toggle:
+        icon: material/weather-sunny
+        name: Alternar para modo escuro
+    - scheme: slate
+      primary: indigo
+      accent: blue
+      toggle:
+        icon: material/weather-night
+        name: Alternar para modo claro
+  features:
+    - navigation.instant
+    - navigation.tabs
+    - navigation.sections
+    - navigation.top
+    - search.suggest
+    - search.highlight
+    - content.code.copy
+
+markdown_extensions:
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.arithmatex:
+      generic: true
+  - admonition
+  - tables
+  - attr_list
+
+extra_javascript:
+  - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
+
+nav:
+  - Início: index.md
+  - Negócio & Métricas:
+      - Visão Geral do Setor: negocio/contexto_setor.md
+      - Regras de Negócio e KPIs: negocio/kpis_regras.md
+  - Engenharia & Dados:
+      - Arquitetura da Solução: engenharia/arquitetura.md
+      - Contrato de Dados: engenharia/contrato_dados.md
+  - Catálogo & Governança:
+      - Catálogo de Dados, Métricas e OKRs: catalogo/glossario_metricas.md
+      - Padrões de Commit & Git: governanca/padroes_git.md
+  - Execução:
+      - Manual de Operação: manual/operacao.md
