@@ -15,9 +15,11 @@ from src.queries import (
     get_available_competencies,
     get_cep_data,
     get_churn_reasons,
+    get_commercial_pace,
     get_executive_kpis,
     get_funnel_summary,
     get_monthly_evolution,
+    get_strategic_scenarios_table,
     get_units_breakeven_analysis,
     get_units_list,
     simulate_parametric_scenario,
@@ -367,6 +369,14 @@ with tab_sim:
 
     st.divider()
 
+    # Matriz Executiva dos 3 Cenários Estratégicos Pré-Configurados (Caso de Uso 02)
+    st.markdown("#### 📋 Matriz Executiva dos 3 Cenários Estratégicos (Caso de Uso 02 da Spec 03)")
+    st.caption("Visão comparativa de sensibilidade (Estresse vs. Base vs. Otimista) para apoio à decisão da diretoria.")
+    df_scenarios = get_strategic_scenarios_table(unidade_selecionada)
+    st.dataframe(df_scenarios, use_container_width=True, hide_index=True)
+
+    st.divider()
+
     # Seção de Ponto de Equilíbrio (Breakeven) por Loja Física
     st.markdown("#### 🏢 Análise de Ponto de Equilíbrio (Breakeven) por Loja Física")
     st.caption("Mede a disciplina na alocação de capital (Capex de implantação controlado e Opex mensal sustentável).")
@@ -487,6 +497,39 @@ with tab_cep:
             hide_index=True,
         )
 
+        with st.expander("🔍 Protocolo Detalhado dos 5 Porquês por Causa-Raiz (Diagnóstico com a Ponta)", expanded=True):
+            col_pq1, col_pq2, col_pq3 = st.columns(3)
+            with col_pq1:
+                st.markdown("##### 🏛️ Gargalo em Plantão de Cartório")
+                st.markdown("""
+                * **1. Por que atrasou?** O funeral iniciou 12h após o acionamento inicial.
+                * **2. Por que demorou?** Certidão de óbito reteve o processo de sepultamento.
+                * **3. Por que reteve?** Cartório de plantão no fim de semana estava sobrecarregado.
+                * **4. Por que sobrecarregado?** Documentos foram levados fisicamente em papel.
+                * **5. Causa-Raiz (BPM):** Ausência de protocolo digital com os cartórios polo.
+                * **Ação Corretiva:** Mapear no Bizagi o fluxo de declaração digital e celebrar convênio.
+                """)
+            with col_pq2:
+                st.markdown("##### 🏥 Liberação Pericial no IML")
+                st.markdown("""
+                * **1. Por que atrasou?** Lead time superou 32h no atendimento.
+                * **2. Por que demorou?** Corpo aguardou emissão de laudo pericial.
+                * **3. Por que aguardou?** Guia de encaminhamento estava sem carimbo legível.
+                * **4. Por que sem carimbo?** Família não recebeu orientação no hospital.
+                * **5. Causa-Raiz (BPM):** Triagem da central 24h não exigiu checklist prévio.
+                * **Ação Corretiva:** Padronizar checklist obrigatório no script do atendente 24h.
+                """)
+            with col_pq3:
+                st.markdown("##### 🚐 Indisponibilidade de Frota de Apoio")
+                st.markdown("""
+                * **1. Por que atrasou?** Fila de espera para remoção intermunicipal.
+                * **2. Por que demorou?** Veículo de traslado quebrou na rodovia estadual.
+                * **3. Por que quebrou?** Revisão mecânica preventiva estava vencida.
+                * **4. Por que estava vencida?** Não havia alerta automático de quilometragem.
+                * **5. Causa-Raiz (BPM):** Controle de manutenção em planilha sem SLA.
+                * **Ação Corretiva:** Automatizar gatilho de manutenção preventiva na frota.
+                """)
+
         st.info("""
         📌 **Ação Prática de BPM:** Não se altera um processo por causa de variações comuns. Porém, os registros acima 
         representam **causas especiais de variabilidade** (ex.: demora na liberação de certidão em plantão de cartório, 
@@ -505,6 +548,35 @@ with tab_crm:
     """)
 
     df_funnel = get_funnel_summary(unidade_selecionada)
+    pace = get_commercial_pace(unidade_selecionada)
+
+    # Indicadores de Ritmo Operacional de Vendas ("Bater Bumbo")
+    st.markdown("#### 🥁 Ritmo Operacional de Captação ('Bater Bumbo na Operação')")
+    st.caption("Inputs diários e cadência de conversão necessários para cobrir os custos operacionais (Opex) da loja.")
+
+    p1, p2, p3, p4 = st.columns(4)
+    p1.metric(
+        "Leads Fechados",
+        f"{pace['leads_fechados']:,} vendas",
+        delta=f"{pace['taxa_conversao_geral']}% conversão geral",
+    )
+    p2.metric(
+        "Meta Semanal de Vendas",
+        f"{pace['meta_semanal_vendas']} contratos/sem",
+        help="Volume de novos associados por semana necessário para cobrir o Opex da filial.",
+    )
+    p3.metric(
+        "Ritmo Atual Observado",
+        f"{pace['ritmo_semanal_atual']} contratos/sem",
+    )
+    p4.metric(
+        "Atingimento da Cadência",
+        f"{pace['atingimento_ritmo_pct']}%",
+        delta=pace["status_ritmo"],
+        delta_color="normal" if pace["atingimento_ritmo_pct"] >= 90.0 else "inverse",
+    )
+
+    st.markdown("<br>", unsafe_allow_html=True)
 
     fcol_left, fcol_right = st.columns([6, 4])
 

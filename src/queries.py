@@ -419,3 +419,75 @@ def get_funnel_summary(id_unidade: Optional[str] = None) -> pd.DataFrame:
         return con.execute(query, params).df()
     finally:
         con.close()
+
+
+def get_strategic_scenarios_table(id_unidade: Optional[str] = None) -> pd.DataFrame:
+    """Gera tabela comparativa estruturada dos 3 cenários executivos formais (Estresse, Base, Otimista)."""
+    cenarios_config = [
+        {"nome": "1. Estresse (Pessimista)", "preco": -5.0, "elast": 1.5, "sinistros": 20.0},
+        {"nome": "2. Base (Status Quo)", "preco": 0.0, "elast": 0.8, "sinistros": 0.0},
+        {"nome": "3. Otimista (Expansão)", "preco": 8.0, "elast": 0.5, "sinistros": -5.0},
+    ]
+
+    linhas: List[Dict[str, Any]] = []
+
+    for c in cenarios_config:
+        res = simulate_parametric_scenario(c["preco"], c["elast"], c["sinistros"], id_unidade)
+        linhas.append({
+            "Cenário Estratégico": c["nome"],
+            "Preço Mensalidade": f"{c['preco']:+.1f}%",
+            "Sinistralidade": f"{c['sinistros']:+.1f}%",
+            "MRR Projetado (R$)": f"R$ {res['mrr_projetado']:,.2f}",
+            "Base Ativa": f"{res['ativos_projetados']:,} contratos",
+            "Custo Sinistros (R$)": f"R$ {res['custo_sinistros_projetado']:,.2f}",
+            "Margem Operacional (R$)": f"R$ {res['margem_projetada']:,.2f}",
+            "Variação vs Base": f"{res['delta_margem_pct']:+.1f}%",
+        })
+
+    return pd.DataFrame(linhas)
+
+
+def get_commercial_pace(id_unidade: Optional[str] = None) -> Dict[str, Any]:
+    """Calcula o ritmo operacional de captação (bater bumbo) e cobertura de Opex."""
+    con = get_connection(read_only=True)
+    try:
+        where_clause = "WHERE id_unidade = ?" if id_unidade and id_unidade != "TODAS" else ""
+        params = [id_unidade] if id_unidade and id_unidade != "TODAS" else []
+
+        leads_fechados = con.execute(f"""
+            SELECT COUNT(*) 
+            FROM fct_leads_crm 
+            {where_clause} {"AND" if where_clause else "WHERE"} etapa_funil = 'Fechado'
+        """, params).fetchone()[0]
+
+        total_leads = con.execute(f"""
+            SELECT COUNT(*) 
+            FROM fct_leads_crm 
+            {where_clause}
+        """, params).fetchone()[0]
+
+        # Estimativa de meta de ritmo de captação semanal baseada no Opex
+        if id_unidade and id_unidade != "TODAS":
+            opex = con.execute("SELECT opex_mensal_base FROM dim_unidades WHERE id_unidade = ?", [id_unidade]).fetchone()[0]
+        else:
+            opex = con.execute("SELECT SUM(opex_mensal_base) FROM dim_unidades").fetchone()[0]
+        
+        opex = float(opex or 0.0)
+        meta_mensal_novas_vendas = max(15, int(round(opex / 1400.0)))
+        meta_semanal = max(4, int(round(meta_mensal_novas_vendas / 4.0)))
+
+        ritmo_semanal_atual = max(3, int(round(leads_fechados / 30.0)))
+        atingimento_pct = round((ritmo_semanal_atual / meta_semanal) * 100.0, 1)
+
+        return {
+            "leads_fechados": leads_fechados,
+            "total_leads": total_leads,
+            "taxa_conversao_geral": round((leads_fechados * 100.0) / max(total_leads, 1), 1),
+            "meta_semanal_vendas": meta_semanal,
+            "ritmo_semanal_atual": ritmo_semanal_atual,
+            "atingimento_ritmo_pct": atingimento_pct,
+            "status_ritmo": "Cadência Saudável (Bate Meta)" if atingimento_pct >= 90.0 else "Atenção: Ritmo Abaixo da Meta",
+        }
+    finally:
+        con.close()
+
