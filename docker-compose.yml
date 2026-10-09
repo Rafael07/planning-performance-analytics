@@ -1,0 +1,26 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: integra_dignidade_app
+    ports:
+      - "8501:8501"
+    volumes:
+      - ./data:/app/data
+    restart: unless-stopped
+    command: ["streamlit", "run", "app.py", "--server.port=8501", "--server.address=0.0.0.0"]
+
+  docs:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: integra_dignidade_docs
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./docs:/app/docs
+      - ./specs:/app/specs
+      - ./mkdocs.yml:/app/mkdocs.yml
+    restart: unless-stopped
+    command: ["mkdocs", "serve", "--dev-addr=0.0.0.0:8000"]
