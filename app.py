@@ -1,7 +1,7 @@
 """Planning & Performance Analytics - Plataforma Executiva (Projeto Integra-Dignidade).
 
 Interface de inteligência analítica, simulação de sensibilidade de cenários,
-controle estatístico de processos (CEP) e pipeline comercial para o Grupo Digna.
+controle estatístico de processos (CEP) e pipeline comercial para o Grupo Dignidade.
 """
 
 from __future__ import annotations
@@ -34,7 +34,8 @@ st.set_page_config(
 )
 
 # Estilização CSS Corporativa Premium
-st.markdown("""
+st.markdown(
+    """
 <style>
     /* Estilo geral e tipografia */
     .main { background-color: #f8fafc; }
@@ -98,12 +99,17 @@ st.markdown("""
         color: #1e40af;
     }
 </style>
-""", unsafe_allow_html=True)
+""",
+    unsafe_allow_html=True,
+)
 
 # Barra Lateral: Filtros Globais e Governança
 with st.sidebar:
-    st.image("https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=300&auto=format&fit=crop&q=60", use_container_width=True)
-    st.markdown("### 🏛️ Grupo Digna")
+    st.image(
+        "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=300&auto=format&fit=crop&q=60",
+        use_container_width=True,
+    )
+    st.markdown("### 🏛️ Grupo Dignidade")
     st.markdown("**Plataforma Integra-Dignidade**")
     st.caption("Planejamento Estratégico, Simulação & CEP")
     st.divider()
@@ -130,42 +136,51 @@ with st.sidebar:
 
     st.divider()
     st.markdown("#### 🛡️ Governança de Dados")
-    st.markdown("""
+    st.markdown(
+        """
     * **Motor Analítico:** DuckDB Colunar
     * **Contratos:** 100% Validados
     * **Metodologia:** SDD & CEP 3-sigma
     * **Versão:** v0.1.0-executivo
-    """)
+    """
+    )
     st.caption("Apoio à Decisão da Diretoria Executiva")
 
 # Banner Principal
-st.markdown("""
+st.markdown(
+    """
 <div class="header-banner">
     <h2>Sistema Integrado de Gestão Estratégica e Performance</h2>
-    <p>Conectando os rituais de governança da diretoria à realidade operacional da ponta | Grupo Digna</p>
+    <p>Conectando os rituais de governança da diretoria à realidade operacional da ponta | Grupo Dignidade</p>
 </div>
-""", unsafe_allow_html=True)
+""",
+    unsafe_allow_html=True,
+)
 
 # Abas de Navegação Estratégica
-tab_bsc, tab_sim, tab_cep, tab_crm = st.tabs([
-    "📊 1. Visão Executiva & Metas (BSC)",
-    "🎯 2. Simulador Paramétrico de Cenários",
-    "⚙️ 3. Eficiência Operacional & CEP (BPM)",
-    "📈 4. Pipeline Comercial & Lojas",
-])
+tab_bsc, tab_sim, tab_cep, tab_crm = st.tabs(
+    [
+        "📊 1. Visão Executiva & Metas (BSC)",
+        "🎯 2. Simulador Paramétrico de Cenários",
+        "⚙️ 3. Eficiência Operacional & CEP (BPM)",
+        "📈 4. Pipeline Comercial & Lojas",
+    ]
+)
 
 # -----------------------------------------------------------------------------
 # ABA 1: VISÃO EXECUTIVA & BALANCED SCORECARD (BSC)
 # -----------------------------------------------------------------------------
 with tab_bsc:
     st.markdown("### Painel de Acompanhamento de Metas Corporativas")
-    st.caption(f"Competência: **{comp_selecionada}** | Filtro: **{opcoes_unidades[unidade_selecionada]}**")
+    st.caption(
+        f"Competência: **{comp_selecionada}** | Filtro: **{opcoes_unidades[unidade_selecionada]}**"
+    )
 
     kpis = get_executive_kpis(comp_selecionada, unidade_selecionada)
 
     # Fileira de Métricas Executivas
     c1, c2, c3, c4, c5 = st.columns(5)
-    
+
     delta_mrr = kpis["mrr"] - kpis["meta_mrr"]
     c1.metric(
         label="MRR (Receita Recorrente)",
@@ -212,28 +227,39 @@ with tab_bsc:
         df_evolucao = get_monthly_evolution()
         if not df_evolucao.empty:
             fig_evol = go.Figure()
-            fig_evol.add_trace(go.Bar(
-                x=df_evolucao["ano_mes"],
-                y=df_evolucao["mrr"],
-                name="MRR (R$)",
-                marker_color="#2563eb",
-                opacity=0.85,
-            ))
-            fig_evol.add_trace(go.Scatter(
-                x=df_evolucao["ano_mes"],
-                y=df_evolucao["contratos_ativos"],
-                name="Contratos Ativos",
-                yaxis="y2",
-                mode="lines+markers",
-                line=dict(color="#10b981", width=3),
-                marker=dict(size=6),
-            ))
+            fig_evol.add_trace(
+                go.Bar(
+                    x=df_evolucao["ano_mes"],
+                    y=df_evolucao["mrr"],
+                    name="MRR (R$)",
+                    marker_color="#2563eb",
+                    opacity=0.85,
+                )
+            )
+            fig_evol.add_trace(
+                go.Scatter(
+                    x=df_evolucao["ano_mes"],
+                    y=df_evolucao["contratos_ativos"],
+                    name="Contratos Ativos",
+                    yaxis="y2",
+                    mode="lines+markers",
+                    line=dict(color="#10b981", width=3),
+                    marker=dict(size=6),
+                )
+            )
             fig_evol.update_layout(
                 height=360,
                 margin=dict(l=20, r=20, t=30, b=20),
-                legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1),
+                legend=dict(
+                    orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1
+                ),
                 yaxis=dict(title="MRR (R$)", showgrid=True, gridcolor="#f1f5f9"),
-                yaxis2=dict(title="Contratos Ativos", overlaying="y", side="right", showgrid=False),
+                yaxis2=dict(
+                    title="Contratos Ativos",
+                    overlaying="y",
+                    side="right",
+                    showgrid=False,
+                ),
                 plot_bgcolor="#ffffff",
                 paper_bgcolor="#ffffff",
             )
@@ -257,7 +283,9 @@ with tab_bsc:
                 height=360,
                 showlegend=False,
                 margin=dict(l=20, r=40, t=30, b=20),
-                xaxis=dict(title="Volume de Cancelamentos", showgrid=True, gridcolor="#f1f5f9"),
+                xaxis=dict(
+                    title="Volume de Cancelamentos", showgrid=True, gridcolor="#f1f5f9"
+                ),
                 yaxis=dict(title="", autorange="reversed"),
                 plot_bgcolor="#ffffff",
                 paper_bgcolor="#ffffff",
@@ -267,26 +295,30 @@ with tab_bsc:
             st.info("Nenhum cancelamento registrado para os filtros selecionados.")
 
     # Alerta Estratégico com a filosofia da liderança
-    st.info("""
+    st.info(
+        """
     💡 **Diretriz de Governança Estratégica:** *"O indicador apenas sinaliza que algo vai mal; quem está na ponta operacional explica o porquê."*
     Os motivos de cancelamento acima subsidiam os ritos quinzenais de revisão de processos com os gerentes de loja para correção de rotas comerciais.
-    """)
+    """
+    )
 
 # -----------------------------------------------------------------------------
 # ABA 2: SIMULADOR PARAMÉTRICO DE CENÁRIOS & EXPANSÃO
 # -----------------------------------------------------------------------------
 with tab_sim:
     st.markdown("### Modelo de Simulação de Sensibilidade Paramétrica")
-    st.markdown("""
+    st.markdown(
+        """
     Subsidia a tomada de decisão sob incerteza da diretoria executiva, testando elasticidades de preço,
     impacto na taxa de cancelamento e custos de sinistro antes de qualquer repactuação de mercado.
-    """)
+    """
+    )
 
     col_sim_controls, col_sim_results = st.columns([4, 6])
 
     with col_sim_controls:
         st.markdown("#### 🎛️ Variáveis de Decisão")
-        
+
         var_preco = st.slider(
             "Reajuste Médio de Preço na Mensalidade (%):",
             min_value=-10.0,
@@ -316,11 +348,13 @@ with tab_sim:
 
         st.caption("Base de simulação: Competência 2026-09 | Parâmetros instantâneos.")
 
-    sim_res = simulate_parametric_scenario(var_preco, elasticidade_churn, var_sinistros, unidade_selecionada)
+    sim_res = simulate_parametric_scenario(
+        var_preco, elasticidade_churn, var_sinistros, unidade_selecionada
+    )
 
     with col_sim_results:
         st.markdown("#### 📊 Resultado Financeiro Projetado")
-        
+
         r1, r2 = st.columns(2)
         r1.metric(
             "MRR Projetado",
@@ -349,14 +383,30 @@ with tab_sim:
         )
 
         # Gráfico de comparação antes vs projetado
-        fig_sim_bar = go.Figure(data=[
-            go.Bar(name="Cenário Base (Atual)", x=["MRR", "Custos Sinistros", "Margem Operacional"], 
-                   y=[sim_res["base_mrr"], sim_res["base_custo_sinistros"], sim_res["margem_base"]], 
-                   marker_color="#94a3b8"),
-            go.Bar(name="Cenário Simulado", x=["MRR", "Custos Sinistros", "Margem Operacional"], 
-                   y=[sim_res["mrr_projetado"], sim_res["custo_sinistros_projetado"], sim_res["margem_projetada"]], 
-                   marker_color="#2563eb"),
-        ])
+        fig_sim_bar = go.Figure(
+            data=[
+                go.Bar(
+                    name="Cenário Base (Atual)",
+                    x=["MRR", "Custos Sinistros", "Margem Operacional"],
+                    y=[
+                        sim_res["base_mrr"],
+                        sim_res["base_custo_sinistros"],
+                        sim_res["margem_base"],
+                    ],
+                    marker_color="#94a3b8",
+                ),
+                go.Bar(
+                    name="Cenário Simulado",
+                    x=["MRR", "Custos Sinistros", "Margem Operacional"],
+                    y=[
+                        sim_res["mrr_projetado"],
+                        sim_res["custo_sinistros_projetado"],
+                        sim_res["margem_projetada"],
+                    ],
+                    marker_color="#2563eb",
+                ),
+            ]
+        )
         fig_sim_bar.update_layout(
             barmode="group",
             height=260,
@@ -370,8 +420,12 @@ with tab_sim:
     st.divider()
 
     # Matriz Executiva dos 3 Cenários Estratégicos Pré-Configurados (Caso de Uso 02)
-    st.markdown("#### 📋 Matriz Executiva dos 3 Cenários Estratégicos (Caso de Uso 02 da Spec 03)")
-    st.caption("Visão comparativa de sensibilidade (Estresse vs. Base vs. Otimista) para apoio à decisão da diretoria.")
+    st.markdown(
+        "#### 📋 Matriz Executiva dos 3 Cenários Estratégicos (Caso de Uso 02 da Spec 03)"
+    )
+    st.caption(
+        "Visão comparativa de sensibilidade (Estresse vs. Base vs. Otimista) para apoio à decisão da diretoria."
+    )
     df_scenarios = get_strategic_scenarios_table(unidade_selecionada)
     st.dataframe(df_scenarios, use_container_width=True, hide_index=True)
 
@@ -379,25 +433,37 @@ with tab_sim:
 
     # Seção de Ponto de Equilíbrio (Breakeven) por Loja Física
     st.markdown("#### 🏢 Análise de Ponto de Equilíbrio (Breakeven) por Loja Física")
-    st.caption("Mede a disciplina na alocação de capital (Capex de implantação controlado e Opex mensal sustentável).")
+    st.caption(
+        "Mede a disciplina na alocação de capital (Capex de implantação controlado e Opex mensal sustentável)."
+    )
 
     df_breakeven = get_units_breakeven_analysis()
     st.dataframe(
-        df_breakeven[[
-            "id_unidade", "nome_cidade", "tipo_unidade", "capex_implantacao", 
-            "opex_mensal_base", "contratos_ativos", "contratos_breakeven", 
-            "saldo_acima_breakeven", "status_financeiro"
-        ]].rename(columns={
-            "id_unidade": "ID",
-            "nome_cidade": "Cidade",
-            "tipo_unidade": "Perfil",
-            "capex_implantacao": "Capex Implantação (R$)",
-            "opex_mensal_base": "Opex Mensal (R$)",
-            "contratos_ativos": "Contratos Ativos",
-            "contratos_breakeven": "Breakeven (Meta)",
-            "saldo_acima_breakeven": "Saldo Líquido",
-            "status_financeiro": "Situação Operacional",
-        }),
+        df_breakeven[
+            [
+                "id_unidade",
+                "nome_cidade",
+                "tipo_unidade",
+                "capex_implantacao",
+                "opex_mensal_base",
+                "contratos_ativos",
+                "contratos_breakeven",
+                "saldo_acima_breakeven",
+                "status_financeiro",
+            ]
+        ].rename(
+            columns={
+                "id_unidade": "ID",
+                "nome_cidade": "Cidade",
+                "tipo_unidade": "Perfil",
+                "capex_implantacao": "Capex Implantação (R$)",
+                "opex_mensal_base": "Opex Mensal (R$)",
+                "contratos_ativos": "Contratos Ativos",
+                "contratos_breakeven": "Breakeven (Meta)",
+                "saldo_acima_breakeven": "Saldo Líquido",
+                "status_financeiro": "Situação Operacional",
+            }
+        ),
         use_container_width=True,
         hide_index=True,
     )
@@ -407,11 +473,13 @@ with tab_sim:
 # -----------------------------------------------------------------------------
 with tab_cep:
     st.markdown("### Controle Estatístico de Processo (CEP) - Atendimento 24h")
-    st.markdown("""
+    st.markdown(
+        """
     **A conexão entre Engenharia de Dados e BPM:** Monitoramento contínuo da variabilidade do tempo de ciclo 
     (lead time) nos atendimentos funerários 24h. Aplicação dos limites estatísticos de três desvios padrão (3-sigma) 
     para isolar causas comuns de estabilidade das **causas especiais** que exigem intervenção de processo.
-    """)
+    """
+    )
 
     cep_info = get_cep_data(unidade_selecionada)
     df_cep = cep_info["df"]
@@ -420,8 +488,16 @@ with tab_cep:
     m1, m2, m3, m4 = st.columns(4)
     m1.metric("Lead Time Médio", f"{cep_info['media_horas']:.1f} horas")
     m2.metric("Limite Superior (LSC 3σ)", f"{cep_info['lsc_horas']:.1f} horas")
-    m3.metric("Estabilidade do Processo", f"{cep_info['taxa_estabilidade_pct']:.1f}% em conformidade")
-    m4.metric("Desvios de Causa Especial", f"{cep_info['total_anomalias']} ocorrências", delta="Gargalos Operacionais", delta_color="inverse")
+    m3.metric(
+        "Estabilidade do Processo",
+        f"{cep_info['taxa_estabilidade_pct']:.1f}% em conformidade",
+    )
+    m4.metric(
+        "Desvios de Causa Especial",
+        f"{cep_info['total_anomalias']} ocorrências",
+        delta="Gargalos Operacionais",
+        delta_color="inverse",
+    )
 
     if not df_cep.empty:
         # Gráfico Carta de Controle Shewhart
@@ -429,23 +505,27 @@ with tab_cep:
 
         # Atendimentos normais
         normais = df_cep[df_cep["status_cep"] == "Causa Comum (Estável)"]
-        fig_cep.add_trace(go.Scatter(
-            x=normais["timestamp_acionamento"],
-            y=normais["tempo_ciclo_horas"],
-            mode="markers",
-            name="Atendimento Estável (Causa Comum)",
-            marker=dict(color="#3b82f6", size=7, opacity=0.7),
-        ))
+        fig_cep.add_trace(
+            go.Scatter(
+                x=normais["timestamp_acionamento"],
+                y=normais["tempo_ciclo_horas"],
+                mode="markers",
+                name="Atendimento Estável (Causa Comum)",
+                marker=dict(color="#3b82f6", size=7, opacity=0.7),
+            )
+        )
 
         # Atendimentos anômalos (Causas especiais)
         anomalos = df_cep[df_cep["status_cep"] != "Causa Comum (Estável)"]
-        fig_cep.add_trace(go.Scatter(
-            x=anomalos["timestamp_acionamento"],
-            y=anomalos["tempo_ciclo_horas"],
-            mode="markers",
-            name="Anomalia (Causa Especial > 3σ)",
-            marker=dict(color="#ef4444", size=11, symbol="diamond"),
-        ))
+        fig_cep.add_trace(
+            go.Scatter(
+                x=anomalos["timestamp_acionamento"],
+                y=anomalos["tempo_ciclo_horas"],
+                mode="markers",
+                name="Anomalia (Causa Especial > 3σ)",
+                marker=dict(color="#ef4444", size=11, symbol="diamond"),
+            )
+        )
 
         # Linha Média
         fig_cep.add_hline(
@@ -468,8 +548,14 @@ with tab_cep:
         fig_cep.update_layout(
             height=420,
             margin=dict(l=20, r=20, t=30, b=20),
-            yaxis=dict(title="Lead Time Operacional (Horas)", showgrid=True, gridcolor="#f1f5f9"),
-            xaxis=dict(title="Momento do Acionamento 24h", showgrid=True, gridcolor="#f1f5f9"),
+            yaxis=dict(
+                title="Lead Time Operacional (Horas)",
+                showgrid=True,
+                gridcolor="#f1f5f9",
+            ),
+            xaxis=dict(
+                title="Momento do Acionamento 24h", showgrid=True, gridcolor="#f1f5f9"
+            ),
             plot_bgcolor="#ffffff",
             paper_bgcolor="#ffffff",
             legend=dict(orientation="h", y=1.05, x=0.5, xanchor="center"),
@@ -477,82 +563,110 @@ with tab_cep:
         st.plotly_chart(fig_cep, use_container_width=True)
 
         # Rito dos 5 Porquês / Bizagi
-        st.markdown("#### 🔬 Protocolo de Investigação de Causa-Raiz (Rito dos 5 Porquês com a Ponta)")
-        st.caption("Casos identificados fora do Limite Superior de Controle para discussão nos fóruns operacionais:")
+        st.markdown(
+            "#### 🔬 Protocolo de Investigação de Causa-Raiz (Rito dos 5 Porquês com a Ponta)"
+        )
+        st.caption(
+            "Casos identificados fora do Limite Superior de Controle para discussão nos fóruns operacionais:"
+        )
 
         st.dataframe(
-            anomalos[[
-                "id_atendimento", "id_contrato", "nome_cidade", "timestamp_acionamento", 
-                "tempo_ciclo_horas", "custo_direto_servico", "status_cep"
-            ]].rename(columns={
-                "id_atendimento": "Ordem de Serviço",
-                "id_contrato": "Contrato",
-                "nome_cidade": "Cidade",
-                "timestamp_acionamento": "Data/Hora Chamado",
-                "tempo_ciclo_horas": "Tempo de Ciclo (h)",
-                "custo_direto_servico": "Custo Direto (R$)",
-                "status_cep": "Classificação Estatística",
-            }),
+            anomalos[
+                [
+                    "id_atendimento",
+                    "id_contrato",
+                    "nome_cidade",
+                    "timestamp_acionamento",
+                    "tempo_ciclo_horas",
+                    "custo_direto_servico",
+                    "status_cep",
+                ]
+            ].rename(
+                columns={
+                    "id_atendimento": "Ordem de Serviço",
+                    "id_contrato": "Contrato",
+                    "nome_cidade": "Cidade",
+                    "timestamp_acionamento": "Data/Hora Chamado",
+                    "tempo_ciclo_horas": "Tempo de Ciclo (h)",
+                    "custo_direto_servico": "Custo Direto (R$)",
+                    "status_cep": "Classificação Estatística",
+                }
+            ),
             use_container_width=True,
             hide_index=True,
         )
 
-        with st.expander("🔍 Protocolo Detalhado dos 5 Porquês por Causa-Raiz (Diagnóstico com a Ponta)", expanded=True):
+        with st.expander(
+            "🔍 Protocolo Detalhado dos 5 Porquês por Causa-Raiz (Diagnóstico com a Ponta)",
+            expanded=True,
+        ):
             col_pq1, col_pq2, col_pq3 = st.columns(3)
             with col_pq1:
                 st.markdown("##### 🏛️ Gargalo em Plantão de Cartório")
-                st.markdown("""
+                st.markdown(
+                    """
                 * **1. Por que atrasou?** O funeral iniciou 12h após o acionamento inicial.
                 * **2. Por que demorou?** Certidão de óbito reteve o processo de sepultamento.
                 * **3. Por que reteve?** Cartório de plantão no fim de semana estava sobrecarregado.
                 * **4. Por que sobrecarregado?** Documentos foram levados fisicamente em papel.
                 * **5. Causa-Raiz (BPM):** Ausência de protocolo digital com os cartórios polo.
                 * **Ação Corretiva:** Mapear no Bizagi o fluxo de declaração digital e celebrar convênio.
-                """)
+                """
+                )
             with col_pq2:
                 st.markdown("##### 🏥 Liberação Pericial no IML")
-                st.markdown("""
+                st.markdown(
+                    """
                 * **1. Por que atrasou?** Lead time superou 32h no atendimento.
                 * **2. Por que demorou?** Corpo aguardou emissão de laudo pericial.
                 * **3. Por que aguardou?** Guia de encaminhamento estava sem carimbo legível.
                 * **4. Por que sem carimbo?** Família não recebeu orientação no hospital.
                 * **5. Causa-Raiz (BPM):** Triagem da central 24h não exigiu checklist prévio.
                 * **Ação Corretiva:** Padronizar checklist obrigatório no script do atendente 24h.
-                """)
+                """
+                )
             with col_pq3:
                 st.markdown("##### 🚐 Indisponibilidade de Frota de Apoio")
-                st.markdown("""
+                st.markdown(
+                    """
                 * **1. Por que atrasou?** Fila de espera para remoção intermunicipal.
                 * **2. Por que demorou?** Veículo de traslado quebrou na rodovia estadual.
                 * **3. Por que quebrou?** Revisão mecânica preventiva estava vencida.
                 * **4. Por que estava vencida?** Não havia alerta automático de quilometragem.
                 * **5. Causa-Raiz (BPM):** Controle de manutenção em planilha sem SLA.
                 * **Ação Corretiva:** Automatizar gatilho de manutenção preventiva na frota.
-                """)
+                """
+                )
 
-        st.info("""
+        st.info(
+            """
         📌 **Ação Prática de BPM:** Não se altera um processo por causa de variações comuns. Porém, os registros acima 
         representam **causas especiais de variabilidade** (ex.: demora na liberação de certidão em plantão de cartório, 
         fila de liberação em IML regional ou quebra mecânica de viatura de traslado). Estes pontos alimentam os 
         checkpoints semanais de remoção de gargalos operacionais.
-        """)
+        """
+        )
 
 # -----------------------------------------------------------------------------
 # ABA 4: PIPELINE COMERCIAL & FUNIL DE LOJAS (CRM)
 # -----------------------------------------------------------------------------
 with tab_crm:
     st.markdown("### Visibilidade do Ritmo de Captação e Pipeline Comercial")
-    st.markdown("""
+    st.markdown(
+        """
     **Controle Operacional Ágil:** Acompanhamento do funil de oportunidades nas lojas físicas 
     para identificar gargalos de conversão e dias de estagnação (*aging*) por etapa.
-    """)
+    """
+    )
 
     df_funnel = get_funnel_summary(unidade_selecionada)
     pace = get_commercial_pace(unidade_selecionada)
 
     # Indicadores de Ritmo Operacional de Vendas ("Bater Bumbo")
     st.markdown("#### 🥁 Ritmo Operacional de Captação ('Bater Bumbo na Operação')")
-    st.caption("Inputs diários e cadência de conversão necessários para cobrir os custos operacionais (Opex) da loja.")
+    st.caption(
+        "Inputs diários e cadência de conversão necessários para cobrir os custos operacionais (Opex) da loja."
+    )
 
     p1, p2, p3, p4 = st.columns(4)
     p1.metric(
@@ -583,12 +697,23 @@ with tab_crm:
     with fcol_left:
         st.markdown("##### 🧭 Funil de Conversão Comercial")
         if not df_funnel.empty:
-            fig_fun = go.Figure(go.Funnel(
-                y=df_funnel["etapa_funil"],
-                x=df_funnel["total_leads"],
-                textinfo="value+percent initial",
-                marker=dict(color=["#3b82f6", "#60a5fa", "#93c5fd", "#f59e0b", "#10b981", "#ef4444"]),
-            ))
+            fig_fun = go.Figure(
+                go.Funnel(
+                    y=df_funnel["etapa_funil"],
+                    x=df_funnel["total_leads"],
+                    textinfo="value+percent initial",
+                    marker=dict(
+                        color=[
+                            "#3b82f6",
+                            "#60a5fa",
+                            "#93c5fd",
+                            "#f59e0b",
+                            "#10b981",
+                            "#ef4444",
+                        ]
+                    ),
+                )
+            )
             fig_fun.update_layout(
                 height=380,
                 margin=dict(l=20, r=20, t=20, b=20),
@@ -613,7 +738,9 @@ with tab_crm:
                 height=380,
                 margin=dict(l=20, r=20, t=20, b=20),
                 xaxis=dict(title="Etapa do Funil"),
-                yaxis=dict(title="Média de Dias Parado", showgrid=True, gridcolor="#f1f5f9"),
+                yaxis=dict(
+                    title="Média de Dias Parado", showgrid=True, gridcolor="#f1f5f9"
+                ),
                 coloraxis_showscale=False,
                 plot_bgcolor="#ffffff",
                 paper_bgcolor="#ffffff",
@@ -621,4 +748,4 @@ with tab_crm:
             st.plotly_chart(fig_aging, use_container_width=True)
 
     st.markdown("---")
-    st.caption("Grupo Digna | Diretoria de Planejamento, Performance e Integração")
+    st.caption("Grupo Dignidade | Diretoria de Planejamento, Performance e Integração")

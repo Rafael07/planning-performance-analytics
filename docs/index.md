@@ -1,12 +1,12 @@
 # Planning & Performance Analytics (Projeto Integra-Dignidade)
 
-Bem-vindo à documentação oficial do **Projeto Integra-Dignidade**, a plataforma integrada de governança estratégica, inteligência analítica, simulação paramétrica de cenários e Controle Estatístico de Processo (CEP) desenvolvida para o **Grupo Digna**.
+Bem-vindo à documentação oficial do **Projeto Integra-Dignidade**, a plataforma integrada de governança estratégica, inteligência analítica, simulação paramétrica de cenários e Controle Estatístico de Processo (CEP) desenvolvida para o **Grupo Dignidade**.
 
 ---
 
 ## 🎯 Propósito e Proposta de Valor
 
-O Grupo Digna atua em um mercado com alto volume operacional, capilaridade geográfica e atendimento contínuo 24 horas. Em cenários de expansão territorial e margens competitivas, a gestão não pode depender de consolidações manuais lentas nem de decisões no "feeling".
+O Grupo Dignidade atua em um mercado com alto volume operacional, capilaridade geográfica e atendimento contínuo 24 horas. Em cenários de expansão territorial e margens competitivas, a gestão não pode depender de consolidações manuais lentas nem de decisões no "feeling".
 
 O **Integra-Dignidade** foi desenhado sob a perspectiva de **Engenharia de Dados aplicada ao Planejamento Estratégico**:
 * **Velocidade de Decisão:** Consolidação em menos de 5 segundos via processamento colunar local (DuckDB).
@@ -20,7 +20,7 @@ O **Integra-Dignidade** foi desenhado sob a perspectiva de **Engenharia de Dados
 
 ```mermaid
 graph TD
-    A[Estratégia Corporativa Grupo Digna] --> B[1. Governança BSC & Metas]
+    A[Estratégia Corporativa Grupo Dignidade] --> B[1. Governança BSC & Metas]
     A --> C[2. Simulação de Cenários & Breakeven]
     A --> D[3. Eficiência Operacional & CEP 3-sigma]
     A --> E[4. Visibilidade Comercial de Lojas]

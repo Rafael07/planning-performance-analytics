@@ -2,7 +2,7 @@
 
 Gera bases relacionais sintéticas com integridade referencial estrita,
 sazonalidade e distribuição probabilística realista para o setor de
-planos de assistência familiar e funerários do Grupo Digna.
+planos de assistência familiar e funerários do Grupo Dignidade.
 """
 
 from __future__ import annotations
@@ -70,7 +70,7 @@ def generate_dim_calendario(
 
 
 def generate_dim_unidades() -> pd.DataFrame:
-    """Gera o catálogo de unidades físicas e lojas do Grupo Digna."""
+    """Gera o catálogo de unidades físicas e lojas do Grupo Dignidade."""
     unidades = [
         {
             "id_unidade": "UND-CG-01",

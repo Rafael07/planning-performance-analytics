@@ -14,7 +14,7 @@ O modelo de negócio de assistência familiar combina características de **assi
 
 Historicamente, as unidades físicas de empresas funerárias funcionavam meramente como balcões transacionais de pagamento de boletos e resolução de cobranças em atraso.
 
-No **Grupo Digna**, as lojas foram reposicionadas:
+No **Grupo Dignidade**, as lojas foram reposicionadas:
 * **Espaço de Experiência e Decisão:** Baseado na *Economia da Experiência* (Pine & Gilmore) e estudos de *Atmosphere Store* (Verhoef et al.), o ambiente foi redesenhado (vitrines acolhedoras, iluminação que conduz o percurso, comunicação clara) para transformar a loja em um ponto onde o cliente conhece o valor da marca e decide contratar o plano com tranquilidade.
 * **Disciplina de Capital:** Esse reposicionamento é guiado por duas premissas inegociáveis:
   * **Capex de Implantação Controlado:** Manutenção do custo de reforma e montagem dentro de tetos rígidos por tipologia de loja.

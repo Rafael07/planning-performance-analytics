@@ -7,7 +7,7 @@ Este catálogo constitui a **Fonte Única da Verdade (Single Source of Truth - S
 ## 1. Glossário Estratégico e Conceitos de Negócio
 
 * **Assistência Familiar / Plano Funerário:** Modelo de negócio de receita recorrente mensal que garante cobertura integral de serviços funerários, cremação, traslado e benefícios em vida para titular e dependentes.
-* **Grupo Digna:** Conglomerado regional de serviços póstumos e assistência familiar, com atuação em cemitérios, crematórios, planos funerários e rede de lojas físicas de apoio.
+* **Grupo Dignidade:** Conglomerado regional de serviços póstumos e assistência familiar, com atuação em cemitérios, crematórios, planos funerários e rede de lojas físicas de apoio.
 * **Lojas Físicas de Apoio:** Pontos de atendimento presencial geograficamente distribuídos, integrando relacionamento, conveniência e experiência do cliente (*Customer Experience - CX*).
 * **Atmosphere Store (Atmosfera de Loja):** Conceito de varejo focado no design de ambiente, vitrine e iluminação para guiar a decisão do cliente sem inflar Capex e Opex.
 * **Capex de Implantação:** Investimento inicial para reforma, montagem, tecnologia e abertura de uma nova unidade física.
@@ -34,7 +34,7 @@ Este catálogo constitui a **Fonte Única da Verdade (Single Source of Truth - S
 
 ## 3. Objetivos e Resultados-Chave (OKRs) do Projeto
 
-* **Objetivo Geral (O1):** Estruturar uma plataforma governada de dados e controle de processos que elimine consolidações manuais e subsidie a expansão sustentável do Grupo Digna com margens protegidas.
+* **Objetivo Geral (O1):** Estruturar uma plataforma governada de dados e controle de processos que elimine consolidações manuais e subsidie a expansão sustentável do Grupo Dignidade com margens protegidas.
   * **KR 1 (Velocidade):** Reduzir o tempo de consolidação das bases de 3 dias úteis para menos de 5 segundos via consultas colunares no DuckDB.
   * **KR 2 (Previsibilidade de Cenários):** Habilitar simulação paramétrica dinâmica e cálculo de breakeven para 100% dos estudos de expansão de lojas.
   * **KR 3 (Eficiência de Processo / BPM):** Monitorar 100% dos atendimentos funerários 24h via CEP 3-sigma, isolando causas especiais de variabilidade no lead time para condução de ritos de melhoria contínua.

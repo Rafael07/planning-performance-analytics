@@ -34,7 +34,7 @@ Este documento é a fonte única da verdade (*Single Source of Truth - SSOT*) do
 
 ## 3. Objetivos e Resultados-Chave (OKRs) do Projeto
 
-* **Objetivo Geral (O1):** Estruturar uma plataforma governada de dados e controle de processos que elimine consolidações manuais e subsidie a expansão sustentável do Grupo Digna com margens protegidas.
+* **Objetivo Geral (O1):** Estruturar uma plataforma governada de dados e controle de processos que elimine consolidações manuais e subsidie a expansão sustentável do Grupo Dignidade com margens protegidas.
   * **KR 1 (Velocidade):** Reduzir o tempo de consolidação das bases de carteira e emissão de relatórios executivos de 3 dias úteis para menos de 5 segundos via consultas colunares no DuckDB.
   * **KR 2 (Previsibilidade de Cenários):** Habilitar simulação paramétrica dinâmica (elasticidade de preço, sensibilidade de churn e sinistralidade) e cálculo de breakeven para 100% dos estudos de expansão de lojas.
   * **KR 3 (Eficiência de Processo / BPM):** Monitorar 100% dos atendimentos funerários 24h via Controle Estatístico de Processos (CEP 3-sigma), isolando causas especiais de variabilidade no lead time para condução de ritos de melhoria contínua.
@@ -123,7 +123,7 @@ Granularidade: 1 registro por dia civil.
 ---
 
 ### 6.2 Tabela: `dim_unidades` (Dimensão de Lojas Físicas e Centrais)
-Granularidade: 1 registro por unidade operacional do Grupo Digna.
+Granularidade: 1 registro por unidade operacional do Grupo Dignidade.
 
 | Coluna | Tipo de Dado | Restrição | Descrição e Regra de Domínio |
 | :--- | :--- | :--- | :--- |
