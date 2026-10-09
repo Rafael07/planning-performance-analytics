@@ -25,6 +25,49 @@ from src.queries import (
     simulate_parametric_scenario,
 )
 
+
+def fmt_brl(val: float | int | None) -> str:
+    """Formata valor monetário no padrão brasileiro: R$ 185.107,86 ou -R$ 75.789,79"""
+    if val is None or pd.isna(val):
+        return "R$ 0,00"
+    is_neg = val < 0
+    formatted = f"{abs(val):,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
+    return f"-R$ {formatted}" if is_neg else f"R$ {formatted}"
+
+
+def fmt_delta_brl(val: float | int | None) -> str:
+    """Formata variação monetária com sinal no padrão brasileiro: +R$ 7.821,86 ou -R$ 4.251,69"""
+    if val is None or pd.isna(val):
+        return "R$ 0,00"
+    sign = "+" if val > 0 else ("-" if val < 0 else "")
+    formatted = f"{abs(val):,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
+    return f"{sign}R$ {formatted}"
+
+
+def fmt_num_br(val: float | int | None, decimals: int = 0) -> str:
+    """Formata números no padrão brasileiro com ponto de milhar: 3.501 ou 18,5"""
+    if val is None or pd.isna(val):
+        return "0"
+    is_neg = val < 0
+    abs_val = abs(val)
+    if decimals == 0:
+        formatted = f"{int(round(abs_val)):,}".replace(",", ".")
+    else:
+        fmt = f"{{val:,.{decimals}f}}"
+        formatted = fmt.format(val=abs_val).replace(",", "X").replace(".", ",").replace("X", ".")
+    sign = "-" if is_neg else ""
+    return f"{sign}{formatted}"
+
+
+def fmt_pct_br(val: float | int | None, decimals: int = 2, show_sign: bool = False) -> str:
+    """Formata percentuais no padrão brasileiro: 1,80% ou +2,0%"""
+    if val is None or pd.isna(val):
+        return "0,0%"
+    sign = "+" if (show_sign and val > 0) else ("-" if val < 0 else "")
+    formatted = f"{abs(val):.{decimals}f}".replace(".", ",")
+    return f"{sign}{formatted}%"
+
+
 # Configuração da página Streamlit
 st.set_page_config(
     page_title="Integra-Dignidade | Planejamento & Performance",
@@ -184,35 +227,35 @@ with tab_bsc:
     delta_mrr = kpis["mrr"] - kpis["meta_mrr"]
     c1.metric(
         label="MRR (Receita Recorrente)",
-        value=f"R$ {kpis['mrr']:,.2f}",
-        delta=f"{delta_mrr:+,.2f} vs Meta" if unidade_selecionada == "TODAS" else None,
+        value=fmt_brl(kpis["mrr"]),
+        delta=f"{fmt_delta_brl(delta_mrr)} vs Meta" if unidade_selecionada == "TODAS" else None,
     )
 
     delta_churn = round(kpis["meta_churn"] - kpis["churn_rate"], 2)
     c2.metric(
         label="Taxa de Churn Mensal",
-        value=f"{kpis['churn_rate']:.2f}%",
-        delta=f"{delta_churn:+.2f}% vs Meta (1.8%)",
+        value=fmt_pct_br(kpis["churn_rate"]),
+        delta=f"{fmt_pct_br(delta_churn, show_sign=True)} vs Meta (1,8%)",
         delta_color="normal",
     )
 
     delta_inad = round(kpis["meta_inadimplencia"] - kpis["taxa_inadimplencia"], 2)
     c3.metric(
         label="Inadimplência (> 30d)",
-        value=f"{kpis['taxa_inadimplencia']:.2f}%",
-        delta=f"{delta_inad:+.2f}% vs Meta (4.5%)",
+        value=fmt_pct_br(kpis["taxa_inadimplencia"]),
+        delta=f"{fmt_pct_br(delta_inad, show_sign=True)} vs Meta (4,5%)",
         delta_color="normal",
     )
 
     c4.metric(
         label="Ticket Médio da Carteira",
-        value=f"R$ {kpis['ticket_medio']:.2f}",
-        delta=f"{kpis['ticket_medio'] - kpis['meta_ticket_medio']:+.2f} vs Meta",
+        value=fmt_brl(kpis["ticket_medio"]),
+        delta=f"{fmt_delta_brl(kpis['ticket_medio'] - kpis['meta_ticket_medio'])} vs Meta",
     )
 
     c5.metric(
         label="LTV da Carteira",
-        value=f"R$ {kpis['ltv']:,.2f}",
+        value=fmt_brl(kpis["ltv"]),
         delta="Vida Útil Estimada",
         delta_color="off",
     )
@@ -358,27 +401,27 @@ with tab_sim:
         r1, r2 = st.columns(2)
         r1.metric(
             "MRR Projetado",
-            f"R$ {sim_res['mrr_projetado']:,.2f}",
-            delta=f"{sim_res['delta_mrr']:+,.2f} ({var_preco:+.1f}%)",
+            fmt_brl(sim_res["mrr_projetado"]),
+            delta=f"{fmt_delta_brl(sim_res['delta_mrr'])} ({fmt_pct_br(var_preco, decimals=1, show_sign=True)})",
         )
         r2.metric(
             "Carteira Ativa Projetada",
-            f"{sim_res['ativos_projetados']:,} contratos",
-            delta=f"{sim_res['ativos_projetados'] - sim_res['base_ativos']:+d} associados",
+            f"{fmt_num_br(sim_res['ativos_projetados'])} contratos",
+            delta=f"{fmt_num_br(sim_res['ativos_projetados'] - sim_res['base_ativos'])} associados",
             delta_color="normal",
         )
 
         r3, r4 = st.columns(2)
         r3.metric(
             "Custo Projetado de Sinistros",
-            f"R$ {sim_res['custo_sinistros_projetado']:,.2f}",
-            delta=f"R$ {sim_res['custo_sinistros_projetado'] - sim_res['base_custo_sinistros']:+,.2f}",
-            delta_color="inverse",
+            fmt_brl(sim_res["custo_sinistros_projetado"]),
+            delta=fmt_delta_brl(sim_res["custo_sinistros_projetado"] - sim_res["base_custo_sinistros"]),
+            delta_color="normal",
         )
         r4.metric(
             "Margem Operacional Projetada",
-            f"R$ {sim_res['margem_projetada']:,.2f}",
-            delta=f"{sim_res['delta_margem']:+,.2f} ({sim_res['delta_margem_pct']:+.1f}%)",
+            fmt_brl(sim_res["margem_projetada"]),
+            delta=f"{fmt_delta_brl(sim_res['delta_margem'])} ({fmt_pct_br(sim_res['delta_margem_pct'], decimals=1, show_sign=True)})",
             delta_color="normal",
         )
 
@@ -438,8 +481,15 @@ with tab_sim:
     )
 
     df_breakeven = get_units_breakeven_analysis()
+    df_breakeven_display = df_breakeven.copy()
+    df_breakeven_display["capex_implantacao"] = df_breakeven_display["capex_implantacao"].apply(fmt_brl)
+    df_breakeven_display["opex_mensal_base"] = df_breakeven_display["opex_mensal_base"].apply(fmt_brl)
+    df_breakeven_display["contratos_ativos"] = df_breakeven_display["contratos_ativos"].apply(lambda x: f"{fmt_num_br(x)} contratos")
+    df_breakeven_display["contratos_breakeven"] = df_breakeven_display["contratos_breakeven"].apply(lambda x: f"{fmt_num_br(x)} contratos")
+    df_breakeven_display["saldo_acima_breakeven"] = df_breakeven_display["saldo_acima_breakeven"].apply(lambda x: f"{fmt_num_br(x)} contratos")
+
     st.dataframe(
-        df_breakeven[
+        df_breakeven_display[
             [
                 "id_unidade",
                 "nome_cidade",
@@ -456,8 +506,8 @@ with tab_sim:
                 "id_unidade": "ID",
                 "nome_cidade": "Cidade",
                 "tipo_unidade": "Perfil",
-                "capex_implantacao": "Capex Implantação (R$)",
-                "opex_mensal_base": "Opex Mensal (R$)",
+                "capex_implantacao": "Capex Implantação",
+                "opex_mensal_base": "Opex Mensal",
                 "contratos_ativos": "Contratos Ativos",
                 "contratos_breakeven": "Breakeven (Meta)",
                 "saldo_acima_breakeven": "Saldo Líquido",
@@ -486,15 +536,15 @@ with tab_cep:
 
     # Métricas do Processo
     m1, m2, m3, m4 = st.columns(4)
-    m1.metric("Lead Time Médio", f"{cep_info['media_horas']:.1f} horas")
-    m2.metric("Limite Superior (LSC 3σ)", f"{cep_info['lsc_horas']:.1f} horas")
+    m1.metric("Lead Time Médio", f"{fmt_num_br(cep_info['media_horas'], decimals=1)} horas")
+    m2.metric("Limite Superior (LSC 3σ)", f"{fmt_num_br(cep_info['lsc_horas'], decimals=1)} horas")
     m3.metric(
         "Estabilidade do Processo",
-        f"{cep_info['taxa_estabilidade_pct']:.1f}% em conformidade",
+        f"{fmt_pct_br(cep_info['taxa_estabilidade_pct'], decimals=1)} em conformidade",
     )
     m4.metric(
         "Desvios de Causa Especial",
-        f"{cep_info['total_anomalias']} ocorrências",
+        f"{fmt_num_br(cep_info['total_anomalias'])} ocorrências",
         delta="Gargalos Operacionais",
         delta_color="inverse",
     )
@@ -532,7 +582,7 @@ with tab_cep:
             y=cep_info["media_horas"],
             line_dash="dash",
             line_color="#10b981",
-            annotation_text=f"Média: {cep_info['media_horas']:.1f}h",
+            annotation_text=f"Média: {fmt_num_br(cep_info['media_horas'], decimals=1)}h",
             annotation_position="bottom right",
         )
 
@@ -541,7 +591,7 @@ with tab_cep:
             y=cep_info["lsc_horas"],
             line_dash="dot",
             line_color="#ef4444",
-            annotation_text=f"LSC (+3σ): {cep_info['lsc_horas']:.1f}h",
+            annotation_text=f"LSC (+3σ): {fmt_num_br(cep_info['lsc_horas'], decimals=1)}h",
             annotation_position="top right",
         )
 
@@ -570,8 +620,12 @@ with tab_cep:
             "Casos identificados fora do Limite Superior de Controle para discussão nos fóruns operacionais:"
         )
 
+        anomalos_display = anomalos.copy()
+        anomalos_display["custo_direto_servico"] = anomalos_display["custo_direto_servico"].apply(fmt_brl)
+        anomalos_display["tempo_ciclo_horas"] = anomalos_display["tempo_ciclo_horas"].apply(lambda x: f"{fmt_num_br(x, decimals=1)}h")
+
         st.dataframe(
-            anomalos[
+            anomalos_display[
                 [
                     "id_atendimento",
                     "id_contrato",
@@ -588,7 +642,7 @@ with tab_cep:
                     "nome_cidade": "Cidade",
                     "timestamp_acionamento": "Data/Hora Chamado",
                     "tempo_ciclo_horas": "Tempo de Ciclo (h)",
-                    "custo_direto_servico": "Custo Direto (R$)",
+                    "custo_direto_servico": "Custo Direto",
                     "status_cep": "Classificação Estatística",
                 }
             ),
@@ -671,21 +725,21 @@ with tab_crm:
     p1, p2, p3, p4 = st.columns(4)
     p1.metric(
         "Leads Fechados",
-        f"{pace['leads_fechados']:,} vendas",
-        delta=f"{pace['taxa_conversao_geral']}% conversão geral",
+        f"{fmt_num_br(pace['leads_fechados'])} vendas",
+        delta=f"{fmt_pct_br(pace['taxa_conversao_geral'], decimals=1)} conversão geral",
     )
     p2.metric(
         "Meta Semanal de Vendas",
-        f"{pace['meta_semanal_vendas']} contratos/sem",
+        f"{fmt_num_br(pace['meta_semanal_vendas'])} contratos/sem",
         help="Volume de novos associados por semana necessário para cobrir o Opex da filial.",
     )
     p3.metric(
         "Ritmo Atual Observado",
-        f"{pace['ritmo_semanal_atual']} contratos/sem",
+        f"{fmt_num_br(pace['ritmo_semanal_atual'], decimals=1)} contratos/sem",
     )
     p4.metric(
         "Atingimento da Cadência",
-        f"{pace['atingimento_ritmo_pct']}%",
+        f"{fmt_pct_br(pace['atingimento_ritmo_pct'], decimals=1)}",
         delta=pace["status_ritmo"],
         delta_color="normal" if pace["atingimento_ritmo_pct"] >= 90.0 else "inverse",
     )

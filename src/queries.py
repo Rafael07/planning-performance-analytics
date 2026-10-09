@@ -423,15 +423,28 @@ def get_strategic_scenarios_table(id_unidade: Optional[str] = None) -> pd.DataFr
 
     for c in cenarios_config:
         res = simulate_parametric_scenario(c["preco"], c["elast"], c["sinistros"], id_unidade)
+        
+        def _brl(v: float) -> str:
+            is_neg = v < 0
+            formatted = f"{abs(v):,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
+            return f"-R$ {formatted}" if is_neg else f"R$ {formatted}"
+
+        def _pct(v: float) -> str:
+            sign = "+" if v > 0 else ("-" if v < 0 else "")
+            return f"{sign}{abs(v):.1f}%".replace(".", ",")
+
+        def _num(v: int) -> str:
+            return f"{v:,}".replace(",", ".")
+
         linhas.append({
             "Cenário Estratégico": c["nome"],
-            "Preço Mensalidade": f"{c['preco']:+.1f}%",
-            "Sinistralidade": f"{c['sinistros']:+.1f}%",
-            "MRR Projetado (R$)": f"R$ {res['mrr_projetado']:,.2f}",
-            "Base Ativa": f"{res['ativos_projetados']:,} contratos",
-            "Custo Sinistros (R$)": f"R$ {res['custo_sinistros_projetado']:,.2f}",
-            "Margem Operacional (R$)": f"R$ {res['margem_projetada']:,.2f}",
-            "Variação vs Base": f"{res['delta_margem_pct']:+.1f}%",
+            "Preço Mensalidade": _pct(c["preco"]),
+            "Sinistralidade": _pct(c["sinistros"]),
+            "MRR Projetado (R$)": _brl(res["mrr_projetado"]),
+            "Base Ativa": f"{_num(res['ativos_projetados'])} contratos",
+            "Custo Sinistros (R$)": _brl(res["custo_sinistros_projetado"]),
+            "Margem Operacional (R$)": _brl(res["margem_projetada"]),
+            "Variação vs Base": _pct(res["delta_margem_pct"]),
         })
 
     return pd.DataFrame(linhas)
