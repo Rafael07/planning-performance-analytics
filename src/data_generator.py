@@ -375,6 +375,7 @@ def generate_all_datasets() -> Dict[str, pd.DataFrame]:
 
 
 if __name__ == "__main__":
-    datasets = generate_all_datasets()
-    for name, df in datasets.items():
-        print(f"Dataset {name}: {len(df)} registros gerados com sucesso.")
+    from src.database import init_database
+    print("-> Iniciando geração de dados e carga no DuckDB...")
+    init_database()
+

@@ -19,9 +19,15 @@ DEFAULT_DB_PATH = Path(__file__).resolve().parent.parent / "data" / "acolher_ana
 
 
 def get_connection(db_path: Optional[str | Path] = None, read_only: bool = False) -> duckdb.DuckDBPyConnection:
-    """Retorna uma conexão gerenciada ao banco DuckDB."""
+    """Retorna uma conexão gerenciada ao banco DuckDB.
+    
+    Caso o arquivo do banco não exista ou esteja vazio (ex: novo clone do projeto),
+    ele é automaticamente inicializado e populado com os datasets sintéticos.
+    """
     target_path = Path(db_path) if db_path else DEFAULT_DB_PATH
     target_path.parent.mkdir(parents=True, exist_ok=True)
+    if not target_path.exists() or target_path.stat().st_size == 0:
+        init_database(target_path)
     return duckdb.connect(str(target_path), read_only=read_only)
 
 

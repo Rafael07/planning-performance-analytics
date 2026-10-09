@@ -63,6 +63,12 @@ O projeto adota a metodologia **Spec-Driven Development (SDD)**, com regras de n
 
 ## 4. Instruções de Execução
 
+### 0. Clonar o repositório
+```bash
+git clone https://github.com/Rafael07/planning-performance-analytics.git
+cd planning-performance-analytics
+```
+
 ### 1. Criar o ambiente virtual e instalar dependências
 ```bash
 uv venv
@@ -70,9 +76,9 @@ source .venv/bin/activate  # No Windows: .venv\Scripts\activate
 uv pip install -e .
 ```
 
-### 2. Gerar a base de dados sintética e popular o DuckDB
+### 2. Gerar a base de dados sintética e popular o DuckDB (Opcional — Auto-inicializa na 1ª execução)
 ```bash
-uv run python -m src.data_generator
+uv run python -m src.database
 ```
 
 ### 3. Iniciar o painel de apoio à decisão
